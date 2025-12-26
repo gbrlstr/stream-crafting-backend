@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { GsiServerService } from './gsi_server.service';
 import { GsiServerController } from './gsi_server.controller';
+import { GsiServerService } from './gsi_server.service';
 
 @Module({
   controllers: [GsiServerController],

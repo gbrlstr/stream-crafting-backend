@@ -55,6 +55,7 @@ export class GsiServerService {
     switch (gameData.map.game_state) {
       case GS_DRAFT: // DRAFT TIME
         console.log(gameData.draft.activeteam);
+
         // console.log(gameData.hero);
         break;
       case GS_STRAT: // START GAME

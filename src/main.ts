@@ -3,11 +3,18 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { useContainer } from 'class-validator';
+import { ConfigService } from '@nestjs/config';
+import { RedisIoAdapter } from './adapters/redis-io.adapter';
 
 const port = process.env.PORT || 3000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const redisIoAdapter = new RedisIoAdapter(app, app.get(ConfigService));
+  await redisIoAdapter.connectToRedis();
+  app.useWebSocketAdapter(redisIoAdapter);
+
   const options = new DocumentBuilder()
     .setTitle('Stream Crafting API')
     .setDescription('STREAM CRAFTING API currently provides data')
