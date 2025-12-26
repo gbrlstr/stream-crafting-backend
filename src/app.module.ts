@@ -12,6 +12,7 @@ import { PlayersModule } from './players/players.module';
 import { GsiServerModule } from './gsi_server/gsi_server.module';
 import { D2CastGatewayModule } from './d2cast-gateway/d2cast.module';
 import { RedisIoAdapter } from './adapters/redis-io.adapter';
+import { HudsModule } from './huds/huds.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { RedisIoAdapter } from './adapters/redis-io.adapter';
     PlayersModule,
     GsiServerModule,
     D2CastGatewayModule,
+    HudsModule,
   ],
   controllers: [AppController],
   providers: [AppService, IsUniqueConstraint, RedisIoAdapter],

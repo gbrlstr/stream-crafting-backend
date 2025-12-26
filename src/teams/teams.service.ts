@@ -11,7 +11,7 @@ export class TeamsService {
   constructor(
     @InjectRepository(TeamEntity)
     private readonly teamRepository: MongoRepository<TeamEntity>,
-  ) { }
+  ) {}
 
   async create(createTeamDto: CreateTeamDto) {
     return await this.teamRepository.save(createTeamDto);
