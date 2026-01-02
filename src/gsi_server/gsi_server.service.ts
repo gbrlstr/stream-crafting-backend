@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Dota2, DOTA2GSI } from 'dotagsi';
-import { GS_DRAFT, GS_STRAT } from 'src/constants';
+import { GS_DRAFT, GS_INGAME, GS_STRAT } from 'src/constants';
+import { D2CastGateway } from 'src/d2cast-gateway/d2cast.gateway';
 
 export interface IClientData {
   hostname: string;
@@ -12,7 +13,7 @@ export class GsiServerService {
   private readonly GSI: DOTA2GSI;
   private clients = new Set<IClientData>();
 
-  constructor() {
+  constructor(private readonly gateway: D2CastGateway) {
     this.GSI = new DOTA2GSI();
     this.GSI.on('data', (dota2) => this.handleGSIDOTA(dota2));
   }
@@ -54,12 +55,24 @@ export class GsiServerService {
   handleGSIDOTA(gameData: Dota2) {
     switch (gameData.map.game_state) {
       case GS_DRAFT: // DRAFT TIME
-        console.log(gameData.draft.activeteam);
-
-        // console.log(gameData.hero);
+        this.gateway.wss.local.emit('dota:draft', {
+          draft: gameData.draft,
+          players: gameData.players,
+          map: gameData.map,
+        });
         break;
       case GS_STRAT: // START GAME
         console.log('Strategy time!');
+        this.gateway.wss.local.emit('dota:strategy', {
+          message: 'Strategy time started',
+        });
+        break;
+
+      case GS_INGAME: // INGAME
+        console.log('Ingame');
+        this.gateway.wss.local.emit('dota:ingame', {
+          gameData: gameData,
+        });
         break;
     }
   }
