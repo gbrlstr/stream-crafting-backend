@@ -22,13 +22,30 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('HUDs')
-@ApiBearerAuth('JWT')
-@UseGuards(AuthGuard('jwt'))
 @Controller('huds')
 export class HudsController {
   constructor(private readonly hudsService: HudsService) {}
 
+  // Rota pública para buscar HUD por ID (usada no overlay do OBS)
+  @Get('public/:id')
+  @ApiResponse({
+    status: 200,
+    description: 'The record return a HUD (public access).',
+  })
+  @ApiResponse({ status: 404, description: 'HUD not found.' })
+  @ApiParam({
+    name: 'id',
+    required: true,
+    description: 'HUD ID (secret key)',
+    type: String,
+  })
+  async findOnePublic(@Param('id') id: string) {
+    return await this.hudsService.findOne(id);
+  }
+
   @Post()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('JWT')
   @ApiResponse({
     status: 201,
     description: 'The HUD has been successfully created.',
@@ -44,6 +61,8 @@ export class HudsController {
   }
 
   @Get()
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('JWT')
   @ApiResponse({
     status: 200,
     description: 'The record return all HUDs.',
@@ -54,6 +73,8 @@ export class HudsController {
   }
 
   @Get(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('JWT')
   @ApiResponse({
     status: 200,
     description: 'The record return a HUD.',
@@ -70,6 +91,8 @@ export class HudsController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('JWT')
   @ApiResponse({
     status: 200,
     description: 'The record has been successfully updated.',
@@ -90,6 +113,8 @@ export class HudsController {
   }
 
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
+  @ApiBearerAuth('JWT')
   @ApiResponse({
     status: 200,
     description: 'The record has been successfully deleted.',
